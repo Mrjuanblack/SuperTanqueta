@@ -24,6 +24,8 @@ Shader "Hidden/Roystan/Outline Post Process"
 			// Data pertaining to _MainTex's dimensions.
 			// https://docs.unity3d.com/Manual/SL-PropertiesInPrograms.html
 			float4 _MainTex_TexelSize;
+			float2 _BlockCount;
+			float2 _BlockSize;
 			float _Scale;
 			float _DepthThreshold;
 			float _NormalThreshold;
@@ -70,48 +72,57 @@ Shader "Hidden/Roystan/Outline Post Process"
 
 			float4 Frag(Varyings i) : SV_Target
 			{
-				float4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.texcoord);
+				float2 blockPos = floor(i.texcoord * _BlockCount);
+
+				float2 blockCenter = blockPos * _BlockSize + _BlockSize * 0.5;
+
+				float4 tex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, blockCenter);
+
 				float halfScaleFloor = floor(_Scale * 0.5);
 				float halfScaleCeil = ceil(_Scale * 0.5);
 
-				float2 bottomLeftUV = i.texcoord - float2(_MainTex_TexelSize.x, _MainTex_TexelSize.y) * halfScaleFloor;
-				float2 topRightUV = i.texcoord + float2(_MainTex_TexelSize.x, _MainTex_TexelSize.y) * halfScaleCeil;  
-				float2 bottomRightUV = i.texcoord + float2(_MainTex_TexelSize.x * halfScaleCeil, -_MainTex_TexelSize.y * halfScaleFloor);
-				float2 topLeftUV = i.texcoord + float2(-_MainTex_TexelSize.x * halfScaleFloor, _MainTex_TexelSize.y * halfScaleCeil);
+				//return tex;
+//
+				float4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, blockCenter);
 
-				float depth0 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, bottomLeftUV).r;
-				float depth1 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, topRightUV).r;
-				float depth2 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, bottomRightUV).r;
-				float depth3 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, topLeftUV).r;
+				// float2 bottomLeftUV = blockCenter - float2(_MainTex_TexelSize.x, _MainTex_TexelSize.y) * halfScaleFloor;
+				// float2 topRightUV = blockCenter + float2(_MainTex_TexelSize.x, _MainTex_TexelSize.y) * halfScaleCeil;  
+				// float2 bottomRightUV = blockCenter + float2(_MainTex_TexelSize.x * halfScaleCeil, -_MainTex_TexelSize.y * halfScaleFloor);
+				// float2 topLeftUV = blockCenter + float2(-_MainTex_TexelSize.x * halfScaleFloor, _MainTex_TexelSize.y * halfScaleCeil);
 
-				float3 normal0 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, bottomLeftUV).rgb;
-				float3 normal1 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, topRightUV).rgb;
-				float3 normal2 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, bottomRightUV).rgb;
-				float3 normal3 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, topLeftUV).rgb;
+				// float depth0 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, bottomLeftUV).r;
+				// float depth1 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, topRightUV).r;
+				// float depth2 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, bottomRightUV).r;
+				// float depth3 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, topLeftUV).r;
 
-				float3 normalFiniteDifference0 = normal1 - normal0;
-				float3 normalFiniteDifference1 = normal3 - normal2;
+				// float3 normal0 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, bottomLeftUV).rgb;
+				// float3 normal1 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, topRightUV).rgb;
+				// float3 normal2 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, bottomRightUV).rgb;
+				// float3 normal3 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, topLeftUV).rgb;
 
-				float edgeNormal = sqrt(dot(normalFiniteDifference0, normalFiniteDifference0) + dot(normalFiniteDifference1, normalFiniteDifference1));
-				edgeNormal = edgeNormal > _NormalThreshold ? 1 : 0;
+				// float3 normalFiniteDifference0 = normal1 - normal0;
+				// float3 normalFiniteDifference1 = normal3 - normal2;
 
-				float depthFiniteDifference0 = depth1 - depth0;
-				float depthFiniteDifference1 = depth3 - depth2;
+				// float edgeNormal = sqrt(dot(normalFiniteDifference0, normalFiniteDifference0) + dot(normalFiniteDifference1, normalFiniteDifference1));
+				// edgeNormal = edgeNormal > _NormalThreshold ? 1 : 0;
 
-				float edgeDepth = sqrt(pow(depthFiniteDifference0, 2) + pow(depthFiniteDifference1, 2)) * 100;
+				// float depthFiniteDifference0 = depth1 - depth0;
+				// float depthFiniteDifference1 = depth3 - depth2;
 
-				float3 viewNormal = normal0 * 2 - 1;
-				float NdotV = 1 - dot(viewNormal, -i.viewSpaceDir);
-				float normalThreshold01 = saturate((NdotV - _DepthNormalThreshold) / (1 - _DepthNormalThreshold));
-				float normalThreshold = normalThreshold01 * _DepthNormalThresholdScale + 1;
+				// float edgeDepth = sqrt(pow(depthFiniteDifference0, 2) + pow(depthFiniteDifference1, 2)) * 100;
+
+				// float3 viewNormal = normal0 * 2 - 1;
+				// float NdotV = 1 - dot(viewNormal, -i.viewSpaceDir);
+				// float normalThreshold01 = saturate((NdotV - _DepthNormalThreshold) / (1 - _DepthNormalThreshold));
+				// float normalThreshold = normalThreshold01 * _DepthNormalThresholdScale + 1;
 
 
-				float depthThreshold = _DepthThreshold * depth0 * normalThreshold;
-				edgeDepth = edgeDepth > depthThreshold ? 1 : 0;
+				// float depthThreshold = _DepthThreshold * depth0 * normalThreshold;
+				// edgeDepth = edgeDepth > depthThreshold ? 1 : 0;
 
-				float edge = max(edgeDepth, edgeNormal);
+				// float edge = max(edgeDepth, edgeNormal);
 				
-				return edge;
+				// return edge;
 				return color;
 			}
 			ENDHLSL

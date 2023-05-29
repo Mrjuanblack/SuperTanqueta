@@ -63,8 +63,8 @@ MonoBehaviour:
     overrideState: 1
     value: 1
   scale:
-    overrideState: 0
-    value: 1
+    overrideState: 1
+    value: 2
   depthThreshold:
     overrideState: 0
     value: 1.5
@@ -77,3 +77,6 @@ MonoBehaviour:
   depthNormalThresholdScale:
     overrideState: 0
     value: 7
+  blockCount:
+    overrideState: 1
+    value: 254
