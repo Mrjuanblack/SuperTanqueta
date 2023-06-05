@@ -79,4 +79,4 @@ MonoBehaviour:
     value: 7
   blockCount:
     overrideState: 1
-    value: 254
+    value: 512
