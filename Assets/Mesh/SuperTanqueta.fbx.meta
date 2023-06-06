@@ -3,7 +3,52 @@ guid: 0eb61820b4b83db4f9a2d448c0c898d0
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_MainBody
+    second: {fileID: 2100000, guid: 92fdb5092d40dbf4fa81a39c307ae35a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_MainBody_BackDecor
+    second: {fileID: 2100000, guid: 152dcd4c4c75f1643a351e5beecea768, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_MainBody_Decor
+    second: {fileID: 2100000, guid: 8a80bb28de19fd049ba3e1c7627d9022, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_MainTurret
+    second: {fileID: 2100000, guid: c533deb22931618439f2e29bc0b90f57, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_MainTurretCannon
+    second: {fileID: 2100000, guid: 206d08f25cb576d4481c9bb5d0bdc0b7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_MainTurret_Bullets&JerryCans
+    second: {fileID: 2100000, guid: d3ad3564c311d4c46a1ffdb6c3722ca1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_MainTurret_ExtraDecor
+    second: {fileID: 2100000, guid: 90b21f2654a3fef449a3a9f204f9084c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_SmallTurret
+    second: {fileID: 2100000, guid: 1e4c8c1929808fd4c80a2806054b19a2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_Tracks&Rivets
+    second: {fileID: 2100000, guid: 8cf63a91226f0c943ae86d931691382a, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
