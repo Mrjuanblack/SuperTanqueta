@@ -217,11 +217,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!4 &807875049 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -4084360035114222255, guid: 0eb61820b4b83db4f9a2d448c0c898d0, type: 3}
-  m_PrefabInstance: {fileID: 1339805800}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,7 +495,7 @@ MonoBehaviour:
   moveSpeed: 5
   bodyRotationSpeed: 2.5
   turretRotationSpeed: 10
-  turretTransform: {fileID: 807875049}
+  turretTransform: {fileID: 0}
 --- !u!54 &1959723777
 Rigidbody:
   m_ObjectHideFlags: 0
