@@ -402,6 +402,11 @@ MonoBehaviour:
   cameraClearFlags: 2
   background: {r: 1, g: 1, b: 1, a: 1}
   targetTexture: _CameraNormalsTexture
+--- !u!4 &1272986888 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -4084360035114222255, guid: 0eb61820b4b83db4f9a2d448c0c898d0, type: 3}
+  m_PrefabInstance: {fileID: 1339805800}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1339805800
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -495,7 +500,7 @@ MonoBehaviour:
   moveSpeed: 5
   bodyRotationSpeed: 2.5
   turretRotationSpeed: 10
-  turretTransform: {fileID: 0}
+  turretTransform: {fileID: 1272986888}
 --- !u!54 &1959723777
 Rigidbody:
   m_ObjectHideFlags: 0
