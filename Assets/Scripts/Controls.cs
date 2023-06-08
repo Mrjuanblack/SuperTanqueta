@@ -44,6 +44,24 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""swapWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""eb15119b-8db8-4336-a24c-d2915a0ad9a5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""a57f70ed-91b3-450d-921f-ce0d65c65da0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -68,6 +86,28 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b59be8c6-7933-48da-9012-eccc83565c6a"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""swapWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0a35ff37-5e34-4bfc-bc5a-76cd23d42661"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": ""Hold(duration=0.1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -78,6 +118,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_gameplay = asset.FindActionMap("gameplay", throwIfNotFound: true);
         m_gameplay_move = m_gameplay.FindAction("move", throwIfNotFound: true);
         m_gameplay_aim = m_gameplay.FindAction("aim", throwIfNotFound: true);
+        m_gameplay_swapWeapon = m_gameplay.FindAction("swapWeapon", throwIfNotFound: true);
+        m_gameplay_shoot = m_gameplay.FindAction("shoot", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -141,12 +183,16 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
     private readonly InputAction m_gameplay_move;
     private readonly InputAction m_gameplay_aim;
+    private readonly InputAction m_gameplay_swapWeapon;
+    private readonly InputAction m_gameplay_shoot;
     public struct GameplayActions
     {
         private @Controls m_Wrapper;
         public GameplayActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @move => m_Wrapper.m_gameplay_move;
         public InputAction @aim => m_Wrapper.m_gameplay_aim;
+        public InputAction @swapWeapon => m_Wrapper.m_gameplay_swapWeapon;
+        public InputAction @shoot => m_Wrapper.m_gameplay_shoot;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -162,6 +208,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @aim.started += instance.OnAim;
             @aim.performed += instance.OnAim;
             @aim.canceled += instance.OnAim;
+            @swapWeapon.started += instance.OnSwapWeapon;
+            @swapWeapon.performed += instance.OnSwapWeapon;
+            @swapWeapon.canceled += instance.OnSwapWeapon;
+            @shoot.started += instance.OnShoot;
+            @shoot.performed += instance.OnShoot;
+            @shoot.canceled += instance.OnShoot;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -172,6 +224,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @aim.started -= instance.OnAim;
             @aim.performed -= instance.OnAim;
             @aim.canceled -= instance.OnAim;
+            @swapWeapon.started -= instance.OnSwapWeapon;
+            @swapWeapon.performed -= instance.OnSwapWeapon;
+            @swapWeapon.canceled -= instance.OnSwapWeapon;
+            @shoot.started -= instance.OnShoot;
+            @shoot.performed -= instance.OnShoot;
+            @shoot.canceled -= instance.OnShoot;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -193,5 +251,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
+        void OnSwapWeapon(InputAction.CallbackContext context);
+        void OnShoot(InputAction.CallbackContext context);
     }
 }

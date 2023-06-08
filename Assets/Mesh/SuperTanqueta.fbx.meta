@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Mat_Armor
+    second: {fileID: 2100000, guid: 31395771d5bdbd346b4c07531e01d295, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Mat_MainBody
     second: {fileID: 2100000, guid: 92fdb5092d40dbf4fa81a39c307ae35a, type: 2}
   - first:
@@ -42,8 +47,23 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Mat_Metal1
+    second: {fileID: 2100000, guid: 839a4265be5a7fc458240b6542cc1903, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_Metal_2
+    second: {fileID: 2100000, guid: f6c8532364bd83e44a8ef1e1f7b95eb5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Mat_SmallTurret
     second: {fileID: 2100000, guid: 1e4c8c1929808fd4c80a2806054b19a2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_Tracks
+    second: {fileID: 2100000, guid: 37ae3e93f79ebf5428d9b1b2abe30ee2, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule

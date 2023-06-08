@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 public class TankController : MonoBehaviour
 {
@@ -9,7 +10,23 @@ public class TankController : MonoBehaviour
     public float bodyRotationSpeed = 2.5f;
     public float turretRotationSpeed = 10f;
 
-    public Transform turretTransform;
+    public Transform mainTurretTransform;
+    private Quaternion mainTurretDefRot;
+    public Transform smallTurretTransform;
+    private Quaternion smallTurretDefRot;
+
+    public Transform smallTurretSpawnTransform;
+    public Transform mainTurretSpawnTransform;
+
+    public float mainTurretCooldown = 1f;
+    private float mainTurretCurrentCooldown = 0f;
+    public float smallTurretCooldown = 0.2f;
+    private float smallTurretCurrentCooldown = 0f;
+
+    public GameObject bulletRef;
+
+    private bool isMainTurretActive = true;
+    private bool isShooting = false;
 
     private Rigidbody tankRigidbody;
     private Transform tankTransform;
@@ -27,6 +44,9 @@ public class TankController : MonoBehaviour
         controls.gameplay.move.canceled += OnMoveCanceled;
         controls.gameplay.aim.performed += OnAimPerformed;
         controls.gameplay.aim.canceled += OnAimCanceled;
+        controls.gameplay.swapWeapon.performed += OnSwapPerformed;
+        controls.gameplay.shoot.performed += OnShootPerformed;
+        controls.gameplay.shoot.canceled += OnShootCanceled;
     }
 
     private void OnDisable()
@@ -40,11 +60,43 @@ public class TankController : MonoBehaviour
         controls.gameplay.move.canceled -= OnMoveCanceled;
         controls.gameplay.aim.performed -= OnAimPerformed;
         controls.gameplay.aim.canceled -= OnAimCanceled;
+        controls.gameplay.swapWeapon.performed -= OnSwapPerformed;
+        controls.gameplay.shoot.performed -= OnShootPerformed;
+        controls.gameplay.shoot.canceled -= OnShootCanceled;
     }
 
     private void Awake()
     {
         tankRigidbody = GetComponent<Rigidbody>();
+        mainTurretDefRot = mainTurretTransform.localRotation;
+        smallTurretDefRot = smallTurretTransform.localRotation;
+    }
+
+    private void Update()
+    {
+        if(isShooting){
+            if(isMainTurretActive){
+                if (mainTurretCurrentCooldown >= mainTurretCooldown) {
+                    Shoot(true);
+                    mainTurretCurrentCooldown = 0;
+                }
+            } else {
+                if (smallTurretCurrentCooldown >= smallTurretCooldown) {
+                    Shoot(false);
+                    smallTurretCurrentCooldown = 0;
+                }
+            }
+        }
+        ManageCooldowns(Time.deltaTime);
+    }
+
+    private void ManageCooldowns(float deltaTime) {
+        if(mainTurretCurrentCooldown < mainTurretCooldown){
+            mainTurretCurrentCooldown += deltaTime;
+        }
+        if(smallTurretCurrentCooldown < smallTurretCooldown){
+            smallTurretCurrentCooldown += deltaTime;
+        }
     }
 
     private void FixedUpdate()
@@ -63,7 +115,20 @@ public class TankController : MonoBehaviour
         if (aimDirection != Vector3.zero)
         {
             Quaternion turretRotation = Quaternion.LookRotation(aimDirection);
-            turretTransform.rotation = Quaternion.Slerp(turretTransform.rotation, turretRotation, turretRotationSpeed * Time.deltaTime);
+            if (isMainTurretActive) {
+                mainTurretTransform.rotation = Quaternion.Slerp(mainTurretTransform.rotation, turretRotation, turretRotationSpeed * Time.deltaTime);
+            }
+            else
+            {
+                smallTurretTransform.rotation = Quaternion.Slerp(smallTurretTransform.rotation, turretRotation, turretRotationSpeed * Time.deltaTime);
+            }
+            
+        }
+
+        if(isMainTurretActive){
+            smallTurretTransform.localRotation = Quaternion.Slerp(smallTurretTransform.localRotation, smallTurretDefRot, turretRotationSpeed * Time.deltaTime);
+        } else {
+            mainTurretTransform.localRotation = Quaternion.Slerp(mainTurretTransform.localRotation, mainTurretDefRot, turretRotationSpeed * Time.deltaTime);
         }
     }
 
@@ -85,5 +150,42 @@ public class TankController : MonoBehaviour
     private void OnAimCanceled(InputAction.CallbackContext context)
     {
         aimInput = Vector2.zero;
+    }
+
+    private void OnSwapPerformed(InputAction.CallbackContext context)
+    {
+        SwapTurret();
+    }
+
+    private void OnShootPerformed(InputAction.CallbackContext context)
+    {
+        isShooting = true;
+    }
+    private void OnShootCanceled(InputAction.CallbackContext context)
+    {
+        isShooting = false;
+    }
+
+    private void SwapTurret()
+    {
+        isMainTurretActive = !isMainTurretActive;
+        // if(isMainTurretActive){
+        //     smallTurretTransform.localRotation = smallTurretDefRot;
+        // } else {
+        //     mainTurretTransform.localRotation = mainTurretDefRot;
+        // }
+    }
+
+    private void Shoot(bool isMainTurret)
+    {
+        if(isMainTurret)
+        {
+            Debug.Log("asdasdasd");
+            Projectile bulletScript = bulletRef.GetComponent<Projectile>();
+            bulletScript.maxPiercingCount = 0;
+            bulletScript.explodeAtEnd = true;
+            bulletScript.explosionRadius = 5;
+            Instantiate(bulletRef, mainTurretSpawnTransform.position, mainTurretSpawnTransform.rotation);
+        }
     }
 }
