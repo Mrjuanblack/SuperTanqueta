@@ -11,6 +11,7 @@ public class TankController : MonoBehaviour
     public float turretRotationSpeed = 10f;
 
     private Transform mainTurretTransform;
+    private Transform mainTurretTargetTransform;
     private Quaternion mainTurretDefRot;
     private Transform smallTurretTransform;
     private Quaternion smallTurretDefRot;
@@ -31,7 +32,7 @@ public class TankController : MonoBehaviour
     private Vector2 moveInput;
     private Vector2 aimInput;
 
-    private Transform tankBodyRigTrans;
+    private Transform tankBodyTrans;
     private Rigidbody tankBodyRigidbody;
     private Quaternion initialRotformTankBody;
 
@@ -69,13 +70,17 @@ public class TankController : MonoBehaviour
 
     private void Awake()
     {
-        tankBodyRigTrans = gameObject.transform.Find("SuperTanqueta_MainBody").transform.Find("TankBodyRig");
+        tankBodyTrans = gameObject.transform.Find("SuperTanqueta_MainBody");
+        GameObject test = Instantiate(new GameObject("MainTurretTarger"), tankBodyTrans);
         mainTurretTransform = gameObject.transform.Find("SuperTanqueta_MainTurret").transform.Find("MainTurretRig").Find("Base");
+        test.transform.position = mainTurretTransform.position;
+        test.transform.rotation = mainTurretTransform.rotation;
+
         smallTurretTransform = gameObject.transform.Find("SuperTanqueta_SmallTurret").transform.Find("SmallTurretRig").Find("Base");
-        initialRotformTankBody = tankBodyRigTrans.rotation;
+        initialRotformTankBody = new Quaternion(tankBodyTrans.rotation.x, tankBodyTrans.rotation.y, tankBodyTrans.rotation.z, tankBodyTrans.rotation.w);
 
 
-        tankBodyRigidbody = gameObject.transform.Find("SuperTanqueta_MainBody").transform.Find("TankBodyRig").gameObject.AddComponent<Rigidbody>();
+        tankBodyRigidbody = gameObject.transform.Find("SuperTanqueta_MainBody").gameObject.AddComponent<Rigidbody>();
         tankBodyRigidbody.useGravity = false;
         mainTurretDefRot = mainTurretTransform.localRotation;
         smallTurretDefRot = smallTurretTransform.localRotation;
@@ -119,6 +124,7 @@ public class TankController : MonoBehaviour
             Debug.Log(tankBodyRigidbody);
             Quaternion bodyRotation = Quaternion.LookRotation(movement) * initialRotformTankBody;
             tankBodyRigidbody.rotation = Quaternion.Lerp(tankBodyRigidbody.rotation, bodyRotation, bodyRotationSpeed * Time.deltaTime);
+            //mainTurret
         }
 
         // Turret Aiming
