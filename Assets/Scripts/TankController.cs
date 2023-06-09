@@ -23,7 +23,8 @@ public class TankController : MonoBehaviour
     public float smallTurretCooldown = 0.2f;
     private float smallTurretCurrentCooldown = 0f;
 
-    public GameObject bulletRef;
+    public GameObject smallBulletRef;
+    public GameObject bigBulletRef;
 
     private bool isMainTurretActive = true;
     private bool isShooting = false;
@@ -39,6 +40,9 @@ public class TankController : MonoBehaviour
     private AudioSource mainTurretAudio;
 
     private Animator mainBodyAnim;
+    private Animator mainTurretAnim;
+    private Animator leftTrackAnim;
+    private Animator rightTrackAnim;
 
     private void OnEnable()
     {
@@ -98,6 +102,9 @@ public class TankController : MonoBehaviour
         smallTurretAudio = smallTurretTransform.gameObject.GetComponent<AudioSource>();
         mainTurretAudio = mainTurretTransform.gameObject.GetComponent<AudioSource>();
         mainBodyAnim = tankBodyTrans.gameObject.GetComponent<Animator>();
+        mainTurretAnim = mainTurretTransform.Find("SuperTanqueta_MainTurret").GetComponent<Animator>();
+        leftTrackAnim = tankBodyTrans.Find("SuperTanqueta_TackLeft").gameObject.GetComponent<Animator>();
+        rightTrackAnim = tankBodyTrans.Find("SuperTanqueta_TackRight").gameObject.GetComponent<Animator>();
     }
 
     private void Update()
@@ -136,11 +143,17 @@ public class TankController : MonoBehaviour
         {
             Quaternion bodyRotation = Quaternion.LookRotation(movement) * initialRotformTankBody;
             tankBodyRigidbody.rotation = Quaternion.Lerp(tankBodyRigidbody.rotation, bodyRotation, bodyRotationSpeed * Time.deltaTime);
-            Debug.Log(string.Format("Turret {0} | Target {0}", mainTurretTransform.position, mainTurretTargetTransform.position));
             mainTurretTransform.position = mainTurretTargetTransform.position;
             smallTurretTransform.position = smallTurretTargetTransform.position;
             mainBodyAnim.SetFloat("Speed", moveInput.x);
             mainBodyAnim.SetFloat("Tilt", moveInput.y);
+            mainTurretAnim.SetFloat("Speed", moveInput.x);
+            mainTurretAnim.SetFloat("Tilt", moveInput.y);
+            leftTrackAnim.speed = movement.magnitude;
+            rightTrackAnim.speed = movement.magnitude;
+        }else{
+            leftTrackAnim.speed = 0;
+            rightTrackAnim.speed = 0;
         }
 
         // Turret Aiming
@@ -207,18 +220,13 @@ public class TankController : MonoBehaviour
     {
         if(isMainTurret)
         {
-            Projectile bulletScript = bulletRef.GetComponent<Projectile>();
-            bulletScript.maxPiercingCount = 0;
-            bulletScript.explodeAtEnd = true;
-            bulletScript.explosionRadius = 5;
-            Instantiate(bulletRef, mainTurretSpawnTransform.position, mainTurretSpawnTransform.rotation);
+            Instantiate(bigBulletRef, mainTurretSpawnTransform.position, mainTurretSpawnTransform.rotation);
+            mainTurretAudio.pitch = Random.Range(0.90f, 1f);
             mainTurretAudio.Play();
+            mainTurretAnim.SetTrigger("Shoot");
         } else {
-            Projectile bulletScript = bulletRef.GetComponent<Projectile>();
-            bulletScript.maxPiercingCount = 0;
-            bulletScript.explodeAtEnd = false;
-            bulletScript.explosionRadius = 0;
-            Instantiate(bulletRef, smallTurretSpawnTransform.position, smallTurretSpawnTransform.rotation);
+            Instantiate(smallBulletRef, smallTurretSpawnTransform.position, smallTurretSpawnTransform.rotation);
+            smallTurretAudio.pitch = Random.Range(0.95f, 1f);
             smallTurretAudio.Play();
         }
     }
