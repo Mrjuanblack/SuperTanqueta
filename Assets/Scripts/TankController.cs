@@ -72,6 +72,7 @@ public class TankController : MonoBehaviour
         tankBodyRigTrans = gameObject.transform.Find("SuperTanqueta_MainBody").transform.Find("TankBodyRig");
         mainTurretTransform = gameObject.transform.Find("SuperTanqueta_MainTurret").transform.Find("MainTurretRig").Find("Base");
         smallTurretTransform = gameObject.transform.Find("SuperTanqueta_SmallTurret").transform.Find("SmallTurretRig").Find("Base");
+        initialRotformTankBody = tankBodyRigTrans.rotation;
 
 
         tankBodyRigidbody = gameObject.transform.Find("SuperTanqueta_MainBody").transform.Find("TankBodyRig").gameObject.AddComponent<Rigidbody>();
