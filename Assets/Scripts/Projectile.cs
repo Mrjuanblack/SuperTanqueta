@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public float speed = 10f; // Speed of the bullet
+    public float speed = 35f; // Speed of the bullet
     public int maxPiercingCount = 0; // Maximum number of enemies the bullet can pierce (0 for no piercing)
     public bool explodeAtEnd = false; // Should the bullet explode at the end of its trajectory?
     public float explosionRadius = 5f; // Radius of the explosion if explodeAtEnd is true
