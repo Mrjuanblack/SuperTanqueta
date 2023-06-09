@@ -13,9 +13,7 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("aa");
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        Debug.Log(player.position);
         navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
@@ -71,7 +69,6 @@ public class Enemy : MonoBehaviour
     }
 
     public void TakeDamage(float damage) {
-        Debug.Log(health);
         health -= damage;
         if(health <= 0){
             Destroy(gameObject);

@@ -44,6 +44,9 @@ public class TankController : MonoBehaviour
     private Animator leftTrackAnim;
     private Animator rightTrackAnim;
 
+    private Quaternion lastValidBodyRotation;
+    private Transform recoilTarget;
+
     private void OnEnable()
     {
         // Enable the input actions
@@ -79,6 +82,7 @@ public class TankController : MonoBehaviour
     private void Awake()
     {
         tankBodyTrans = gameObject.transform.Find("SuperTanqueta_MainBody");
+        lastValidBodyRotation = tankBodyTrans.rotation;
 
         GameObject mainTurretGO = Instantiate(new GameObject("MainTurretTarger"), tankBodyTrans);
         GameObject smallTurretGO = Instantiate(new GameObject("SmallTurretTarger"), tankBodyTrans);
@@ -105,6 +109,8 @@ public class TankController : MonoBehaviour
         mainTurretAnim = mainTurretTransform.Find("SuperTanqueta_MainTurret").GetComponent<Animator>();
         leftTrackAnim = tankBodyTrans.Find("SuperTanqueta_TackLeft").gameObject.GetComponent<Animator>();
         rightTrackAnim = tankBodyTrans.Find("SuperTanqueta_TackRight").gameObject.GetComponent<Animator>();
+
+        recoilTarget = mainTurretTransform.Find("RecoilTarget");
     }
 
     private void Update()
@@ -151,7 +157,13 @@ public class TankController : MonoBehaviour
             mainTurretAnim.SetFloat("Tilt", moveInput.y);
             leftTrackAnim.speed = movement.magnitude;
             rightTrackAnim.speed = movement.magnitude;
+
+            lastValidBodyRotation = bodyRotation;
         }else{
+            tankBodyRigidbody.rotation = Quaternion.Lerp(tankBodyRigidbody.rotation, lastValidBodyRotation, bodyRotationSpeed * Time.deltaTime);
+            mainTurretTransform.position = mainTurretTargetTransform.position;
+            smallTurretTransform.position = smallTurretTargetTransform.position;
+
             leftTrackAnim.speed = 0;
             rightTrackAnim.speed = 0;
         }
@@ -163,12 +175,9 @@ public class TankController : MonoBehaviour
             Quaternion turretRotation = Quaternion.LookRotation(aimDirection);
             if (isMainTurretActive) {
                 mainTurretTransform.rotation = Quaternion.Slerp(mainTurretTransform.rotation, turretRotation, turretRotationSpeed * Time.deltaTime);
-            }
-            else
-            {
+            } else {
                 smallTurretTransform.rotation = Quaternion.Slerp(smallTurretTransform.rotation, turretRotation, turretRotationSpeed * Time.deltaTime);
             }
-            
         }
         if (isMainTurretActive) {
             smallTurretTransform.rotation = Quaternion.Slerp(smallTurretTransform.rotation, smallTurretTargetTransform.rotation, turretRotationSpeed * Time.deltaTime);
@@ -224,6 +233,11 @@ public class TankController : MonoBehaviour
             mainTurretAudio.pitch = Random.Range(0.90f, 1f);
             mainTurretAudio.Play();
             mainTurretAnim.SetTrigger("Shoot");
+
+            Vector3 movement = mainTurretTransform.transform.right;
+            Vector3 crossVector = Vector3.Cross(tankBodyRigidbody.transform.up, movement);
+            
+            tankBodyRigidbody.transform.Rotate(recoilTarget.forward, 20, Space.World);
         } else {
             Instantiate(smallBulletRef, smallTurretSpawnTransform.position, smallTurretSpawnTransform.rotation);
             smallTurretAudio.pitch = Random.Range(0.95f, 1f);

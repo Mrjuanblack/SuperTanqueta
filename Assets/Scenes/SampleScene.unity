@@ -262,6 +262,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 885225dca1c08ef4abcf7fec8ad855af, type: 3}
   m_PrefabInstance: {fileID: 1611110485}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &128967696
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 128967697}
+  m_Layer: 0
+  m_Name: RecoilTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &128967697
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128967696}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.35, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1758408953}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &223768821 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 841f9df24fe50674986c4032bf76ac50, type: 3}
@@ -1011,7 +1042,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4d4f49954a0620b4fa9e3f957b8ddaf6, type: 2}
+  - {fileID: 2100000, guid: 98c5812db6d1b9d41bea7ce94a4763ee, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1670,7 +1701,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1186903370}
   - component: {fileID: 1186903371}
-  - component: {fileID: 1186903372}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1717,19 +1747,6 @@ MonoBehaviour:
   smallTurretCooldown: 0.1
   smallBulletRef: {fileID: 6100928690305041563, guid: 69e05ca93104d2f44b57478854c60eb3, type: 3}
   bigBulletRef: {fileID: 6100928690305041563, guid: 4baa02c2d38db414795ad2832c5634eb, type: 3}
---- !u!65 &1186903372
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1186903367}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 5, y: 5.2049284, z: 6.104549}
-  m_Center: {x: 0, y: 1.6737032, z: -0.029455254}
 --- !u!4 &1229927824 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 885225dca1c08ef4abcf7fec8ad855af, type: 3}
@@ -2751,6 +2768,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1642655467}
+  - {fileID: 128967697}
   m_Father: {fileID: 1186903370}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
