@@ -10,30 +10,32 @@ public class TankController : MonoBehaviour
     public float bodyRotationSpeed = 2.5f;
     public float turretRotationSpeed = 10f;
 
-    public Transform mainTurretTransform;
+    private Transform mainTurretTransform;
     private Quaternion mainTurretDefRot;
-    public Transform smallTurretTransform;
+    private Transform smallTurretTransform;
     private Quaternion smallTurretDefRot;
 
-    public Transform smallTurretSpawnTransform;
-    public Transform mainTurretSpawnTransform;
+    // public Transform smallTurretSpawnTransform;
+    // public Transform mainTurretSpawnTransform;
 
-    public float mainTurretCooldown = 1f;
+    private float mainTurretCooldown = 1f;
     private float mainTurretCurrentCooldown = 0f;
     public float smallTurretCooldown = 0.2f;
     private float smallTurretCurrentCooldown = 0f;
 
-    public GameObject bulletRef;
+    // public GameObject bulletRef;
 
     private bool isMainTurretActive = true;
     private bool isShooting = false;
 
-    private Rigidbody tankRigidbody;
-    private Transform tankTransform;
     private Vector2 moveInput;
     private Vector2 aimInput;
 
-     private void OnEnable()
+    private Transform tankBodyRigTrans;
+    private Rigidbody tankBodyRigidbody;
+    private Quaternion initialRotformTankBody;
+
+    private void OnEnable()
     {
         // Enable the input actions
         Controls controls = new Controls();
@@ -67,7 +69,13 @@ public class TankController : MonoBehaviour
 
     private void Awake()
     {
-        tankRigidbody = GetComponent<Rigidbody>();
+        tankBodyRigTrans = gameObject.transform.Find("SuperTanqueta_MainBody").transform.Find("TankBodyRig");
+        mainTurretTransform = gameObject.transform.Find("SuperTanqueta_MainTurret").transform.Find("MainTurretRig").Find("Base");
+        smallTurretTransform = gameObject.transform.Find("SuperTanqueta_SmallTurret").transform.Find("SmallTurretRig").Find("Base");
+
+
+        tankBodyRigidbody = gameObject.transform.Find("SuperTanqueta_MainBody").transform.Find("TankBodyRig").gameObject.AddComponent<Rigidbody>();
+        tankBodyRigidbody.useGravity = false;
         mainTurretDefRot = mainTurretTransform.localRotation;
         smallTurretDefRot = smallTurretTransform.localRotation;
     }
@@ -103,11 +111,13 @@ public class TankController : MonoBehaviour
     {
         // Tank Movement
         Vector3 movement = new Vector3(moveInput.x, 0f, moveInput.y) * moveSpeed;
-        tankRigidbody.velocity = movement;
+        tankBodyRigidbody.velocity = movement;
         if (movement != Vector3.zero)
         {
-            Quaternion bodyRotation = Quaternion.LookRotation(movement);
-            tankRigidbody.rotation = Quaternion.Lerp(tankRigidbody.rotation, bodyRotation, bodyRotationSpeed * Time.deltaTime);
+            Debug.Log("a");
+            Debug.Log(tankBodyRigidbody);
+            Quaternion bodyRotation = Quaternion.LookRotation(movement) * initialRotformTankBody;
+            tankBodyRigidbody.rotation = Quaternion.Lerp(tankBodyRigidbody.rotation, bodyRotation, bodyRotationSpeed * Time.deltaTime);
         }
 
         // Turret Aiming
@@ -124,8 +134,7 @@ public class TankController : MonoBehaviour
             }
             
         }
-
-        if(isMainTurretActive){
+        if (isMainTurretActive) {
             smallTurretTransform.localRotation = Quaternion.Slerp(smallTurretTransform.localRotation, smallTurretDefRot, turretRotationSpeed * Time.deltaTime);
         } else {
             mainTurretTransform.localRotation = Quaternion.Slerp(mainTurretTransform.localRotation, mainTurretDefRot, turretRotationSpeed * Time.deltaTime);
@@ -178,14 +187,14 @@ public class TankController : MonoBehaviour
 
     private void Shoot(bool isMainTurret)
     {
-        if(isMainTurret)
-        {
-            Debug.Log("asdasdasd");
-            Projectile bulletScript = bulletRef.GetComponent<Projectile>();
-            bulletScript.maxPiercingCount = 0;
-            bulletScript.explodeAtEnd = true;
-            bulletScript.explosionRadius = 5;
-            Instantiate(bulletRef, mainTurretSpawnTransform.position, mainTurretSpawnTransform.rotation);
-        }
+        // if(isMainTurret)
+        // {
+        //     Debug.Log("asdasdasd");
+        //     Projectile bulletScript = bulletRef.GetComponent<Projectile>();
+        //     bulletScript.maxPiercingCount = 0;
+        //     bulletScript.explodeAtEnd = true;
+        //     bulletScript.explosionRadius = 5;
+        //     Instantiate(bulletRef, mainTurretSpawnTransform.position, mainTurretSpawnTransform.rotation);
+        // }
     }
 }
